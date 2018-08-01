@@ -1,0 +1,953 @@
+[global_config]
+  suppress_multiple_term_dialog = True
+[keybindings]
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+  [[algQueue]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 4681257d-1845-4e72-9319-c2981e663cf8
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = HKube Algorithm Queue
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="black-alg" METRICS_PORT=9100 node app.js; bash
+      order = 0
+      parent = child10
+      profile = default
+      title = algorithm-queue-black
+      type = Terminal
+      uuid = 4681257d-1845-4e72-9319-c2981e663cf8
+    [[[terminal12]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="blue-alg" METRICS_PORT=9101 node app.js; bash
+      order = 1
+      parent = child10
+      profile = default
+      title = algorithm-queue-blue
+      type = Terminal
+      uuid = bfeb8c60-48a9-422c-b301-b4404b5345fe
+    [[[terminal14]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="eval-alg" METRICS_PORT=9102 node app.js; bash
+      order = 0
+      parent = child13
+      profile = default
+      title = algorithm-queue-eval
+      type = Terminal
+      uuid = daf9622e-6266-4940-9608-d4cd67ce5095
+    [[[terminal15]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="red-alg" METRICS_PORT=9103 node app.js; bash
+      order = 1
+      parent = child13
+      profile = default
+      title = algorithm-queue-red
+      type = Terminal
+      uuid = 2341ee65-2181-46bb-a533-3b4d8f38711b
+    [[[terminal4]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="orange-alg" METRICS_PORT=9104 node app.js; bash
+      order = 0
+      parent = child3
+      profile = default
+      title = algorithm-queue-orange
+      type = Terminal
+      uuid = ef29b37c-84e2-475f-92b5-b1d3acc37209
+    [[[terminal5]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="white-alg" METRICS_PORT=9105 node app.js; bash
+      order = 1
+      parent = child3
+      profile = default
+      title = algorithm-queue-white
+      type = Terminal
+      uuid = 2ecfbdea-c28e-4d24-90e9-d5789a33ccb3
+    [[[terminal7]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="green-alg" METRICS_PORT=9106 node app.js; bash
+      order = 0
+      parent = child6
+      profile = default
+      title = algorithm-queue-green
+      type = Terminal
+      uuid = c74c4a8f-0754-4064-b58a-42077cb19b68
+    [[[terminal8]]]
+      command = cd dev/hkube/algorithm-queue; ALGORITHM_TYPE="yellow-alg" METRICS_PORT=9108 node app.js; bash
+      order = 1
+      parent = child6
+      profile = default
+      title = algorithm-queue-yellow
+      type = Terminal
+      uuid = 1aaf0f18-c40e-46f1-a1ee-a2682916cc68
+  [[apiServer]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = eca128e2-446a-4e4f-a7aa-67d8b5a9bc78
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3000 node app.js "api-server"; bash
+      order = 0
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = e6030c0a-5603-41e5-9f66-28abf97d43bd
+    [[[terminal12]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3002 node app.js "api-server"; bash
+      order = 1
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = b9c6e930-5de3-4dfb-bb27-c5f936b45075
+    [[[terminal14]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3003 node app.js "api-server"; bash
+      order = 0
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = 186604e8-c516-4593-aedc-9a10b0e41a8d
+    [[[terminal15]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3004 node app.js "api-server"; bash
+      order = 1
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = e85ac75a-67a3-4be3-9fc5-c257d4285507
+    [[[terminal4]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3005 node app.js "api-server"; bash
+      order = 0
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = eca128e2-446a-4e4f-a7aa-67d8b5a9bc78
+    [[[terminal5]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3006 node app.js "api-server"; bash
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 8f38ecc1-2ff4-40e8-ba89-a04986cbc4a3
+    [[[terminal7]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3007 node app.js "api-server"; bash
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 6337af1e-7c26-4b59-af66-a520b73c9d2e
+    [[[terminal8]]]
+      command = cd dev/hkube/api-server; NODE_ENV= HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3008 node app.js "api-server"; bash
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 44aca99c-a491-41c7-ab12-c7a071fcc3e1
+  [[docker]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = b0bca7c2-82a1-4818-93dc-ef1e9c246c96
+      last_active_window = True
+      maximised = False
+      order = 0
+      parent = ""
+      position = 2093:259
+      size = 1474, 378
+      title = HKube Dockers
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 734
+      ratio = 0.5
+      type = HPaned
+    [[[terminal2]]]
+      command = cd dev/scripts/dockers; ./redis.sh; bash
+      order = 0
+      parent = child1
+      profile = default
+      type = Terminal
+      uuid = fe5430a6-f9f4-4d55-8fce-9616ec954446
+    [[[terminal3]]]
+      command = cd dev/scripts/dockers; ./etcd.sh; bash
+      order = 1
+      parent = child1
+      profile = default
+      type = Terminal
+      uuid = b0bca7c2-82a1-4818-93dc-ef1e9c246c96
+  [[drivers]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 69367061-186d-4ed4-8f2d-626910bd3b2a
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = HKube Pipeline Drivers
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds1 node app.js "pipeline-driver"; bash
+      order = 0
+      parent = child10
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = aab61733-1c9a-4600-8831-b857d6ab643a
+    [[[terminal12]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds2 node app.js "pipeline-driver"; bash
+      order = 1
+      parent = child10
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = ad4817a7-9b28-4aeb-bf09-f773fb6dc903
+    [[[terminal14]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds3 node app.js "pipeline-driver"; bash
+      order = 0
+      parent = child13
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = c94f88cf-0636-4430-9c42-e5f1f2732f0d
+    [[[terminal15]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds4 node app.js "pipeline-driver"; bash
+      order = 1
+      parent = child13
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = 2ff80b20-aede-4a92-936b-099f43a7a8cb
+    [[[terminal4]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds5 node app.js "pipeline-driver"; bash
+      order = 0
+      parent = child3
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = c30ca8be-6d4b-4c0f-bdf2-5143798f54ca
+    [[[terminal5]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds6 node app.js "pipeline-driver"; bash
+      order = 1
+      parent = child3
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = a2f560ba-268a-48ed-9f5e-86c91987135d
+    [[[terminal7]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds7 node app.js "pipeline-driver"; bash
+      order = 0
+      parent = child6
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = 69367061-186d-4ed4-8f2d-626910bd3b2a
+    [[[terminal8]]]
+      command = cd dev/hkube/pipeline-driver; POD_NAME=pipeline-driver-fdsff2-323ds8 node app.js "pipeline-driver"; bash
+      order = 1
+      parent = child6
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = 652b6f27-9f2b-4474-b277-4fcc49548e51
+  [[evalWorkers]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = ac25fef6-5d8b-4262-8e75-5d65d6f0b956
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 0
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = ac25fef6-5d8b-4262-8e75-5d65d6f0b956
+    [[[terminal12]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 1
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = b37bf4e9-c9ea-4b3e-8209-dd0c2a47dff7
+    [[[terminal14]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 0
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = eebbf387-c9cb-4870-a9c1-96c3bc3beb1c
+    [[[terminal15]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 1
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = 6fffaca5-0c0c-4796-9387-b5947137bbcf
+    [[[terminal4]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 0
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = d84fefbc-7125-4221-bc0d-349e1c2fbd6e
+    [[[terminal5]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 4ab25f03-6a4e-4606-a58a-4e27934abc1b
+    [[[terminal7]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 143b06f2-0ded-4cfd-9d99-68424f70730f
+    [[[terminal8]]]
+      command = cd dev/hkube/worker-stub; ALG="eval-alg" node app.js; bash
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 3ab49ac6-5034-4b72-8b24-c1e909cfb22a
+  [[hkube]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 2923a66d-fe40-43ea-b6f0-3ade8aca2ca2
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/resource-manager; HKUBE_LOG_LEVEL=0 PROMETHEUS_ENDPOINT="http://localhost:9090/api/v1" npm start "resource-manager"; bash
+      order = 0
+      parent = child10
+      profile = default
+      title = resource-manager
+      type = Terminal
+      uuid = 2923a66d-fe40-43ea-b6f0-3ade8aca2ca2
+    [[[terminal12]]]
+      command = cd dev/hkube/simulator; npm start "simulator"; bash
+      order = 1
+      parent = child10
+      profile = default
+      title = simulator
+      type = Terminal
+      uuid = f02ffee3-6bac-4124-8862-3a208183c424
+    [[[terminal14]]]
+      command = cd dev/hkube/monitor-server; npm start "monitor-server"; bash
+      order = 0
+      parent = child13
+      profile = default
+      title = monitor-server
+      type = Terminal
+      uuid = 802ef8cd-755a-4037-98f6-71717caecf8d
+    [[[terminal15]]]
+      command = cd dev/hkube/na; NODE_ENV= HKUBE_LOG_LEVEL=0 API_SERVER_REST_PORT=3001 node app.js "api-server"; bash
+      order = 1
+      parent = child13
+      profile = default
+      title = api-server
+      type = Terminal
+      uuid = 64c63995-4329-440b-a14c-d04e7aa5b468
+    [[[terminal4]]]
+      command = cd dev/hkube/pipeline-driver; NODE_ENV= HKUBE_LOG_LEVEL=0 node app.js "pipeline-driver"; bash
+      order = 0
+      parent = child3
+      profile = default
+      title = pipeline-driver
+      type = Terminal
+      uuid = 4d489d0a-e832-4c7d-b100-6bd3df687ab0
+    [[[terminal5]]]
+      command = cd dev/hkube/api-server; NODE_ENV=  HKUBE_LOG_LEVEL=2 API_SERVER_REST_PORT=3000 node app.js "api-server"; bash
+      order = 1
+      parent = child3
+      profile = default
+      title = api-server
+      type = Terminal
+      uuid = 99627949-d1ab-48a8-ae6a-79d45ded5de9
+    [[[terminal7]]]
+      command = cd dev/hkube/trigger-service; node app.js "trigger-service"; bash
+      order = 0
+      parent = child6
+      profile = default
+      title = trigger-service
+      type = Terminal
+      uuid = 4ef960e1-a867-4cb9-90c4-b5ff4cb43ebc
+    [[[terminal8]]]
+      command = cd dev/hkube/pipeline-driver-queue; HKUBE_LOG_LEVEL=0 node app.js "pipeline-driver-queue"; bash
+      order = 1
+      parent = child6
+      profile = default
+      title = pipeline-driver-queue
+      type = Terminal
+      uuid = 6832657f-ebd2-4156-be50-3222194fe118
+  [[realEvalWorkers]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 960a4feb-1135-4239-a857-4fc9aee9bc14
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 0
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = d423eb78-7550-467a-9990-602e7e43cab7
+    [[[terminal12]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 1
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = 4351f8b3-55dd-4961-a0d8-983b6bab141b
+    [[[terminal14]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 0
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = 4d95ed0e-e3f2-4750-94d3-ea046b4ed1d3
+    [[[terminal15]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 1
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = 53966c2b-5e7b-4af2-bda2-8ef99cf03843
+    [[[terminal4]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 0
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 960a4feb-1135-4239-a857-4fc9aee9bc14
+    [[[terminal5]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 2bb1418c-d329-4b54-8642-c22fdfe71e5d
+    [[[terminal7]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 18a03a72-3805-4ed1-8288-a3a91132e165
+    [[[terminal8]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=eval-alg-fdsff2-323ds2  ./runWithRandoPort.sh "eval-alg"; bash
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = c795a280-ff9e-48de-92bf-6f0bed4c5e5c
+  [[realWorkers]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 28a4a089-ed2e-4563-b081-c4b45544a73a
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 585
+      ratio = 0.5
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 289
+      ratio = 0.499145299145
+      type = VPaned
+    [[[terminal11]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=green-alg-fdsff2-323ds1 METRICS_PORT=9109 ./runWithRandoPort.sh "green-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 0
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = d4507dd0-4af6-4c3c-85ef-f0776df2bf91
+    [[[terminal12]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=green-alg-fdsff2-323ds1 METRICS_PORT=9110 ./runWithRandoPort.sh "green-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 1
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = 9f10f63c-bdba-49fe-ab15-f0a9dda02de3
+    [[[terminal14]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=yellow-alg-fdsff2-323ds1 METRICS_PORT=9111 ./runWithRandoPort.sh "yellow-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 0
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = b54f6e00-3c6b-4137-aff9-1f2eb4ccfcc8
+    [[[terminal15]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=yellow-alg-fdsff2-323ds1 METRICS_PORT=9112 ./runWithRandoPort.sh "yellow-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 1
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = c4389741-b5ac-4a0e-a044-7143964da6e8
+    [[[terminal4]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=black-alg-fdsff2-323ds1 METRICS_PORT=9113 ./runWithRandoPort.sh "black-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 0
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 10782a88-87c0-4deb-96d2-7abde8b0ff72
+    [[[terminal5]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=black-alg-fdsff2-323ds1 METRICS_PORT=9114 ./runWithRandoPort.sh "black-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 87a25ec9-dc7a-4f46-b2b9-f4ef7d3d0d53
+    [[[terminal7]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=red-alg-fdsff2-323ds1 METRICS_PORT=9115 ./runWithRandoPort.sh "red-alg" "python3 ../algorithm-example/wrapper/wrapper.py"; bash
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 28a4a089-ed2e-4563-b081-c4b45544a73a
+    [[[terminal8]]]
+      command = cd ~/dev/hkube/worker; POD_NAME=red-alg-fdsff2-323ds1 METRICS_PORT=9116 ./runWithRandoPort.sh "red-alg" "python3 ../algoPackage/wrapper/wrapper.py"; bash
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 296957d8-d492-47b2-a4b1-e7e253f88437
+  [[stubWorkers]]
+    [[[child0]]]
+      fullscreen = False
+      last_active_term = 4b9b169b-3bf9-4f12-9307-66ad1623a97a
+      last_active_window = True
+      maximised = True
+      order = 0
+      parent = ""
+      position = 1985:24
+      size = 1855, 1176
+      title = harelh@ubuntu-hareln-ww: ~
+      type = Window
+    [[[child1]]]
+      order = 0
+      parent = child0
+      position = 575
+      ratio = 0.491496598639
+      type = VPaned
+    [[[child10]]]
+      order = 0
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child13]]]
+      order = 1
+      parent = child9
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child2]]]
+      order = 0
+      parent = child1
+      position = 279
+      ratio = 0.490434782609
+      type = VPaned
+    [[[child3]]]
+      order = 0
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child6]]]
+      order = 1
+      parent = child2
+      position = 924
+      ratio = 0.499730458221
+      type = HPaned
+    [[[child9]]]
+      order = 1
+      parent = child1
+      position = 295
+      ratio = 0.500840336134
+      type = VPaned
+    [[[terminal11]]]
+      command = cd dev/hkube/worker-stub; ALG="black-alg" node app.js; bash
+      order = 0
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = 227604f3-1d17-4efc-b715-86aed511ea0e
+    [[[terminal12]]]
+      command = cd dev/hkube/worker-stub; ALG="black-alg" node app.js; bash
+      order = 1
+      parent = child10
+      profile = default
+      type = Terminal
+      uuid = c35ead44-9f21-45f8-bd84-a2937174089d
+    [[[terminal14]]]
+      command = cd dev/hkube/worker-stub; ALG="green-alg" node app.js; bash
+      order = 0
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = d1943cb9-eedc-4ec1-be0b-b0f567080a3e
+    [[[terminal15]]]
+      command = cd dev/hkube/worker-stub; ALG="green-alg" node app.js; bash
+      order = 1
+      parent = child13
+      profile = default
+      type = Terminal
+      uuid = bcaae02e-acfa-47a0-b645-fc6543fd81c1
+    [[[terminal4]]]
+      command = cd dev/hkube/worker-stub; ALG="yellow-alg" node app.js; bash
+      order = 0
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 2acd4ec4-ae4e-41ae-857c-390de5555b65
+    [[[terminal5]]]
+      command = cd dev/hkube/worker-stub; ALG="yellow-alg" node app.js; bash
+      order = 1
+      parent = child3
+      profile = default
+      type = Terminal
+      uuid = 26047ffb-74bc-4523-92fe-7c465bc0fa73
+    [[[terminal7]]]
+      command = cd dev/hkube/worker-stub; ALG="red-alg" node app.js; bash
+      order = 0
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 4b9b169b-3bf9-4f12-9307-66ad1623a97a
+    [[[terminal8]]]
+      command = cd dev/hkube/worker-stub; ALG="red-alg" node app.js; bash
+      order = 1
+      parent = child6
+      profile = default
+      type = Terminal
+      uuid = 14ce27d6-a3e1-4d34-9a7d-fd912943447e
+[plugins]
+[profiles]
+  [[default]]
+    background_image = None
+    font = Courier 10 Pitch 12
+    login_shell = True
