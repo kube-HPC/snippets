@@ -1,4 +1,4 @@
-
+#!/usr/bin/env bash
 
 1) copy config file to /home/<USER>/.config/terminator/config
 
