@@ -1,16 +1,14 @@
 {
 	"info": {
-		"_postman_id": "bdce04cd-e27e-f723-734c-8bde104a89a4",
+		"_postman_id": "0f63b0f0-b1e0-424f-9975-b5f48be6e266",
 		"name": "api-server",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"_postman_id": "c679b412-97e3-4c99-ab09-169a7928f1d0",
 			"name": "exec",
 			"item": [
 				{
-					"_postman_id": "ba086804-5abf-44a5-b524-fe28db77f3f0",
 					"name": "/exec/pipeline",
 					"request": {
 						"method": "GET",
@@ -20,10 +18,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/pipeline/{{jobId}}",
 							"host": [
@@ -39,7 +33,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "69e9658a-fafd-46ae-a728-a2aa052dc7de",
 					"name": "/exec/tree",
 					"request": {
 						"method": "GET",
@@ -49,10 +42,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/tree/{{jobId}}",
 							"host": [
@@ -66,15 +55,89 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/exec/list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2b907183-ebeb-4b6a-8ec9-48c483a9e1aa",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/exec/pipelines/list",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"pipelines",
+								"list"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"_postman_id": "b52f820b-2dc6-4dac-80f1-43c10377cbdd",
 			"name": "exec raw",
 			"item": [
 				{
-					"_postman_id": "d148a9c5-53bc-495b-b894-cdc0bf007fb3",
+					"name": "/exec/raw - python",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d23871d4-094a-45a2-82ca-6bf32728521e",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"python\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"python\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [3,32,32,32]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/exec/raw - simple",
 					"event": [
 						{
@@ -102,7 +165,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"@flowInput.files.link\"\n            ]\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"yellow-alg\",\n            \"input\": [\n                \"@green\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"@yellow\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"link\": \"links-1\"\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n    \"name\": \"simple-eval\",\n        \"nodes\": [\n            {\n                \"nodeName\": \"split\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"#@flowInput.text\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function split(input) {\",\n                        \"return input[0].split(' ');\",\n                        \"}\"]\n                }\n            },\n            {\n                \"nodeName\": \"reduce\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"*@split\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function reduce(input) {\",\n                        \"return input[0].reduce((all, word) => { \",\n                        \"if (word in all) {\",\n                        \"all[word]++;\",\n                        \"}\",\n                        \"else {\",\n                        \"all[word] = 1;\",\n                        \"}\",\n                        \"return all;\",\n                        \"}, {});\",\n                        \"}\"\n                    ]\n                }\n            },\n            {\n                \"nodeName\": \"count\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"@reduce\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function count(input) {\",\n                        \"let dict = {}\",\n                        \"input[0].forEach(r => {\",\n                        \"Object.entries(r).forEach(([k, v]) => {\",\n                        \"if (!dict[k]) {\",\n                        \"dict[k] = 0;\",\n                        \"}\",\n                        \"dict[k] += v\",\n                        \"});\",\n                        \"});\",\n                        \"return dict\",\n                        \"}\"\n                    ]\n                }\n\n            }\n        ],\n            \"flowInput\": {\n        \"text\": [\"In mathematics and computer science, a directed acyclic graph \",\n            \"(DAG (About this sound listen)), is a finite directed graph with\",\n            \" no directed cycles. That is, it consists of finitely many vertices and\",\n            \"such that every edge is directed from earlier to later in the sequence.\",\n            \"DAGs can model many different kinds of information. \",\n            \"A spreadsheet can be modeled as a DAG, with a vertex \",\n            \"for each cell and an edge whenever the formula in one\"]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n            \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n            \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -118,21 +181,149 @@
 					"response": []
 				},
 				{
-					"_postman_id": "3321c685-f9c8-461c-a2a8-235604053cd6",
+					"name": "/exec/raw - simple Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"eval-dynamic\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"eval1\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@flowInput.range\"\n            ],\n            \"extraData\": {\n                \"code\": [\n                    \"(input) => {\",\n                    \"const range = Array.from(Array(input[0]).keys());\",\n                    \"return range }\"\n                ]\n            }\n        },\n        {\n            \"nodeName\": \"evalsleep\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#@eval1\",\n                \"@flowInput.time\"\n            ],\n            \"extraData\": {\n                \"code\": [\n                    \"(input,require)=> {\",\n                    \"return new Promise((resolve,reject)=>{setTimeout(()=>resolve(4),input[1])});}\"\n                ]\n            }\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\",\n        \"ttl\": 3600\n    },\n    \"priority\": 3,\n    \"flowInput\": {\n        \"range\": 5,\n        \"time\": 10000\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - empty batch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"simple-eval\",\n        \"nodes\": [\n            {\n                \"nodeName\": \"split\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"#@flowInput.text\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function split(input) {\",\n                        \"return input[0].split(' ');\",\n                        \"}\"]\n                }\n            },\n            {\n                \"nodeName\": \"reduce\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"*@split\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function reduce(input) {\",\n                        \"return input[0].reduce((all, word) => { \",\n                        \"if (word in all) {\",\n                        \"all[word]++;\",\n                        \"}\",\n                        \"else {\",\n                        \"all[word] = 1;\",\n                        \"}\",\n                        \"return all;\",\n                        \"}, {});\",\n                        \"}\"\n                    ]\n                }\n            },\n            {\n                \"nodeName\": \"count\",\n                \"algorithmName\": \"eval-alg\",\n                \"input\": [\n                    \"@reduce\"\n                ],\n                \"extraData\": {\n                    \"code\": [\n                        \"function count(input) {\",\n                        \"let dict = {}\",\n                        \"input[0].forEach(r => {\",\n                        \"Object.entries(r).forEach(([k, v]) => {\",\n                        \"if (!dict[k]) {\",\n                        \"dict[k] = 0;\",\n                        \"}\",\n                        \"dict[k] += v\",\n                        \"});\",\n                        \"});\",\n                        \"return dict\",\n                        \"}\"\n                    ]\n                }\n\n            }\n        ],\n            \"flowInput\": {\n        \"text\": [\"In mathematics and computer science, a directed acyclic graph \",\n            \"(DAG (About this sound listen)), is a finite directed graph with\",\n            \" no directed cycles. That is, it consists of finitely many vertices and\",\n            \"such that every edge is directed from earlier to later in the sequence.\",\n            \"DAGs can model many different kinds of information. \",\n            \"A spreadsheet can be modeled as a DAG, with a vertex \",\n            \"for each cell and an edge whenever the formula in one\"]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n            \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n            \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - no - image",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"no-image\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"node1\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [46]\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/exec/raw - DAG",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
-								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
 									"",
 									"",
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -146,7 +337,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"DAG\",\n        \"nodes\": [{\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"data\"]\n        },\n        {\n            \"nodeName\": \"B\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@A\"]\n        },\n        {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\"]\n        },\n        {\n            \"nodeName\": \"D\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\", \"@G\"]\n        },\n        {\n            \"nodeName\": \"E\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\", \"@C\", \"@D\"]\n        },\n        {\n            \"nodeName\": \"F\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@E\"]\n        },\n        {\n            \"nodeName\": \"G\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"data\"]\n        }]\n\n}"
+							"raw": "{\n    \"name\": \"DAG\",\n        \"nodes\": [{\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"data\"]\n        },\n        {\n            \"nodeName\": \"B\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [{\"bras\": \"@A\"}]\n        },\n        {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\"]\n        },\n        {\n            \"nodeName\": \"D\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\", \"@G\"]\n        },\n        {\n            \"nodeName\": \"E\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@B\", \"@C\", \"@D\"]\n        },\n        {\n            \"nodeName\": \"F\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"@E\"]\n        },\n        {\n            \"nodeName\": \"G\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\"data\"]\n        }]\n\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -162,51 +353,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "afc6f2a4-f6d9-40d7-9d3c-48920ff4e2a0",
-					"name": "/exec/raw - simple trigger",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
-									"",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"@flowInput.files.link\"\n            ]\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"yellow-alg\",\n            \"input\": [\n                \"@green\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"@yellow\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"link\": \"links-1\"\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"triggers\": {\n        \"pipelines\": [\"simple_trigger\"],\n        \"cron\": \"1 * * * * *\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "db025daa-e8e6-4255-85de-46629b835834",
 					"name": "/exec/raw - cpu-load",
 					"event": [
 						{
@@ -230,7 +376,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"cpu\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"cpu-load\",\n            \"input\": [{\n            \t\"cpu\": 4,\n            \t\"duration\": 20\n            }]\n        }\n    ]\n}"
+							"raw": "{\n    \"name\": \"cpu\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"cpu-load\",\n            \"input\": [{\n            \t\"cpu\": 2,\n            \t\"duration\": 300\n            }]\n        }\n    ]\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -246,95 +392,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "2fa99b57-31dd-4a47-bc61-50e03a602508",
-					"name": "/exec/raw - simple triggered",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
-									"",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple_trigger\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"@flowInput\"\n            ]\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"yellow-alg\",\n            \"input\": [\n                \"@green\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"@yellow\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"link\": \"links-1\"\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "c552cd65-7a30-42a9-b324-aac2f2816519",
-					"name": "/exec/raw - batch triggered",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
-									"",
-									"",
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"batch_trigger\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"#@flowInput.files.links\"\n            ]\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"yellow-alg\",\n            \"input\": [\n                \"@green\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"@yellow\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"links\": [\n                \"links-1\",\n                \"links-2\",\n                \"links-3\",\n                \"links-4\",\n                \"links-5\"\n            ]\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "e85a1479-979f-4b3f-a6e3-dfb4a3522df4",
 					"name": "/exec/raw - apak-batch-crash-test",
 					"event": [
 						{
@@ -374,7 +431,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "be0be9a1-cbe1-4edf-bef1-595ebfb57130",
 					"name": "/exec/raw - crazy",
 					"event": [
 						{
@@ -414,87 +470,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "e25810cf-3bc0-4cd7-af18-e3373f571acf",
-					"name": "/exec/raw - crazy red",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n   \"name\": \"crazy\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"black\",\n           \"algorithmName\": \"black-alg\",\n           \"input\": [\n               \"@green\",\n               \"@yellow\",\n               \"*@red\"\n           ]\n       },\n       {\n           \"nodeName\": \"green\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"@flowInput.files.green\"\n           ]\n       },\n       {\n           \"nodeName\": \"yellow\",\n           \"algorithmName\": \"yellow-alg\",\n           \"input\": [\n               \"@flowInput.files.yellow\"\n           ]\n       },\n        {\n           \"nodeName\": \"red\",\n           \"algorithmName\": \"red-alg\",\n           \"input\": [\n               \"#@flowInput.files.red\"\n           ]\n       }\n   ],\n   \"flowInput\": {\n       \"files\": {\n           \"green\": [\n               \"links-1\",\n               \"links-2\",\n               \"links-3\",\n               \"links-4\",\n               \"links-5\"\n           ],\n           \"yellow\": [\n               \"links-6\",\n               \"links-7\",\n               \"links-8\",\n               \"links-9\",\n               \"links-10\"\n           ],\n            \"red\": [\n               \"links-6\",\n               \"links-7\",\n               \"links-8\",\n               \"links-9\",\n               \"links-10\"\n           ]\n       }\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "ebb57f09-fc7f-404d-91ff-38271f0d6f1b",
-					"name": "/exec/raw - crazy copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"evalWaitAny\",\n  \"nodes\": [\n    {\n      \"nodeName\": \"evalsleep\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n        \"#@flowInput.inputs\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input,require)=> {\",\n          \"return new Promise((resolve,reject)=>{setTimeout(()=>resolve(input[0][1]),input[0][0])});}\"\n        ]\n      }\n    }\n  ],\n  \"options\": {\n    \"batchTolerance\": 80,\n    \"progressVerbosityLevel\": \"info\"\n  },\n  \"priority\": 3,\n  \"flowInput\": {\n    \"inputs\": [\n      [\n        1000,\n        5\n      ],\n      [\n        2000,\n        12\n      ],\n      [\n        3000,\n        87\n      ],\n      [\n        4000,\n        125\n      ]\n    ],\n    \"inputsadd\": [\n      3,\n      5,\n      6,\n      89\n    ]\n  }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "b90346be-f9bd-4d6f-b2e3-3b14efecb5f5",
 					"name": "/exec/stored - complex-wait-any",
 					"event": [
 						{
@@ -518,7 +493,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"complex-wait-any\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"[1...11]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"[11...21]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@green\",\n                \"@yellow\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n            \t     \"if(input[2] % 2 === 0) { \",\n            \t    \t\t\"throw new Error('no even numbers')\",\n            \t     \"}\",\n            \t     \"const arr = input[0].concat(input[1])\",\n                     \"arr.push([input[2], input[3]])\",\n                     \"return arr\",\n                \"}\"]\n            }\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n    \"name\": \"complex-wait-any\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#[1...11]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#[11...21]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@green\",\n                \"@yellow\",\n                \"*@green\",\n                \"*@yellow\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n            \t     \"if(input[2] % 2 === 0) { \",\n            \t    \t\t\"throw new Error('no even numbers')\",\n            \t     \"}\",\n            \t     \"const arr = input[0].concat(input[1])\",\n                     \"arr.push([input[2], input[3]])\",\n                     \"return arr\",\n                \"}\"]\n            }\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -534,7 +509,45 @@
 					"response": []
 				},
 				{
-					"_postman_id": "e053f6ec-90ef-4e2a-9eb9-90c704cfed15",
+					"name": "/exec/stored - complex-wait-any Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"complex-wait-any\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"hello\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"batch\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n                     \"return input[0]\",\n                \"}\"]\n            }\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@green\",\n                \"@yellow\",\n                \"*@green\",\n                \"*@yellow\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"(input) => {\",\n            \t     \"const str1 = input[0] + ' ' + input[1]\",\n            \t     \"const str2 = input[2] + ' ' + input[3]\",\n                     \"return [str1, str2]\",\n                \"}\"]\n            }\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/exec/stored - complex-wait-any Copy",
 					"event": [
 						{
@@ -574,7 +587,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "62a62da7-56e6-4477-9b31-aa93c87e4741",
 					"name": "/exec/stored - double-wait-any",
 					"event": [
 						{
@@ -614,7 +626,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "69ef572a-dd03-4935-a4dd-f9be4876c911",
 					"name": "/exec/stored - simple-wait-any",
 					"event": [
 						{
@@ -638,7 +649,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple-wait-any\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"#@flowInput.files.links\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"*@green\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"links\": [\n                \"links-1\",\n                \"links-2\",\n                \"links-3\"\n            ]\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n    \"name\": \"simple-wait-any\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"#[0...2]\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"*@green\"\n            ]\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -654,17 +665,17 @@
 					"response": []
 				},
 				{
-					"_postman_id": "0b27c873-7091-419e-aeff-03747d6332d2",
 					"name": "/exec/raw - batch",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "5609c16f-1f38-4acb-b2d1-fb11b767ef4a",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -678,7 +689,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\": \"batch\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"green\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"#@flowInput.files.links\"\n           ]\n       },\n       {\n           \"nodeName\": \"yellow\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"@green\"\n           ]\n       },\n       {    \n           \"nodeName\": \"black\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"@yellow\"\n           ]\n       }\n   ],\n   \"flowInput\": {\n       \"files\": {\n           \"links\": [\n               \"links-1\",\n               \"links-2\",\n               \"links-3\",\n               \"links-4\",\n               \"links-5\",\n               \"links-6\",\n               \"links-7\",\n               \"links-8\",\n               \"links-9\",\n               \"links-1\",\n               \"links-2\",\n               \"links-3\",\n               \"links-4\",\n               \"links-5\",\n               \"links-6\",\n               \"links-7\",\n               \"links-8\",\n               \"links-9\",\n               \"links-10\"\n           ]\n       }\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
+							"raw": "{\n   \"name\": \"batch\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"one\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"#[1...50]\"\n           ]\n       },\n       {\n           \"nodeName\": \"two\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n\t\t\t\t\"#[1...50]\"\n           ]\n       },\n       {    \n           \"nodeName\": \"three\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n               \"#[1...50]\"\n           ]\n       }\n   ],\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -694,7 +705,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "628a3d4d-1881-427b-b53f-ffaffddec2b7",
 					"name": "/exec/raw - batch on node",
 					"event": [
 						{
@@ -734,7 +744,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "14cf6e17-2eb9-4542-b3e8-f6271b7f6788",
 					"name": "/exec/raw - big-batch",
 					"event": [
 						{
@@ -774,7 +783,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "85d226c3-ad4b-4520-9c03-6184886bea40",
 					"name": "/exec/raw - batch input",
 					"event": [
 						{
@@ -814,7 +822,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "aca86184-2b14-4b5f-97ee-045444130a6b",
 					"name": "/exec/raw - big-wait-batch",
 					"event": [
 						{
@@ -856,25 +863,23 @@
 			]
 		},
 		{
-			"_postman_id": "e36f60b7-6fe3-4ebb-bb72-85ea297516a8",
 			"name": "exec stored",
 			"item": [
 				{
-					"_postman_id": "51ea2402-3564-4d89-9fd6-40cf0b997b27",
 					"name": "/exec/stored - simple",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
-								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
 									"",
 									"",
 									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -888,7 +893,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\"\n}"
+							"raw": "{\n    \"name\": \"simple\",\n    \"priority\": 5\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/stored",
@@ -904,7 +909,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "4d9e5c44-b1f3-4f8c-b91b-096bd6d37d7a",
 					"name": "/exec/stored - simple Copy",
 					"event": [
 						{
@@ -948,7 +952,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "f950aff9-60b6-4802-98cc-56929515919f",
 					"name": "/exec/stored - simple trigger",
 					"event": [
 						{
@@ -992,7 +995,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "a0c13fb4-6902-48e0-a97d-8edc586c9ae3",
 					"name": "/exec/stored - batch",
 					"event": [
 						{
@@ -1032,7 +1034,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "122d4573-c664-4840-a86b-18b4c3bcf684",
 					"name": "/exec/stored - big-batch",
 					"event": [
 						{
@@ -1072,7 +1073,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "33e63f21-58a6-4dec-992f-92fe152fe554",
 					"name": "/exec/stored - trigger",
 					"event": [
 						{
@@ -1096,7 +1096,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple_trigger\"\n}"
+							"raw": "{\n    \"name\": \"trigger-cron\"\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/stored",
@@ -1112,7 +1112,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "2fcb15dd-2c05-4b37-abdf-e3b182e6ce77",
 					"name": "/exec/stored - big-wait-batch",
 					"event": [
 						{
@@ -1152,7 +1151,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "71c559b4-67e6-4a07-a9c7-bf7e5df141a0",
 					"name": "/exec/stored - wait-any-batch",
 					"event": [
 						{
@@ -1192,7 +1190,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "c86ca1c2-9fbf-4ec9-9f18-0c3b0b97e7b3",
 					"name": "/exec/stored - batch-on-node",
 					"event": [
 						{
@@ -1232,7 +1229,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "ee0b790c-567a-4ad0-ba05-fd65411fbe1f",
 					"name": "/exec/stored - simple-wait-batch",
 					"event": [
 						{
@@ -1272,7 +1268,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "40eec0b1-66e0-44d5-851f-4ce1f9942698",
 					"name": "/exec/stored - simple-eval",
 					"event": [
 						{
@@ -1314,11 +1309,9 @@
 			]
 		},
 		{
-			"_postman_id": "67012115-ed74-4465-8d47-63fca41da04a",
 			"name": "internal",
 			"item": [
 				{
-					"_postman_id": "27b20e94-9c6e-4637-b544-fdab62fdfe4f",
 					"name": "/pods",
 					"request": {
 						"method": "GET",
@@ -1328,10 +1321,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{monitorUrl}}/{{jobId}}?",
 							"host": [
@@ -1352,7 +1341,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "d96ad213-8b48-48d0-80fa-6afa932ad27a",
 					"name": "/algorithms/queue",
 					"event": [
 						{
@@ -1374,10 +1362,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\",\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    }\n}"
-						},
 						"url": {
 							"raw": "{{internalUrl}}/algorithms/queue",
 							"host": [
@@ -1392,47 +1376,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "0a9bb8e2-f425-4072-b460-4372eac77375",
-					"name": "/executions/list",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "2b907183-ebeb-4b6a-8ec9-48c483a9e1aa",
-								"type": "text/javascript",
-								"exec": [
-									""
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\",\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/executions/list",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"executions",
-								"list"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "f67f842f-2f3f-477a-a24b-4c314267eb82",
 					"name": "/exec/stored",
 					"event": [
 						{
@@ -1476,7 +1419,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "d4ff3365-00ec-44e3-96b8-176be4772874",
 					"name": "/exec/clean",
 					"event": [
 						{
@@ -1522,12 +1464,173 @@
 			]
 		},
 		{
-			"_postman_id": "f858f913-56e0-4f7a-9277-ed9bea29dc91",
 			"name": "eval",
 			"item": [
 				{
-					"_postman_id": "9be41d97-06d1-40a4-b1ce-2c6d21a258b8",
-					"name": "/exec/raw - test",
+					"name": "/exec/raw - DAG",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"DAG\",\n    \"nodes\": [{\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"B\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@A\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"D\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@G\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[2])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"E\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@C\", \"@D\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[3])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"F\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@E\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"G\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        }],\n    \"flowInput\": {\n        \"timeout\": 80000\n    },\n    \"priority\": 5\n\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - eval sort alg",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3d762e8f-14a8-44d9-9061-99fe6ab30db8",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"python-sort\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"one\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [[4,7,9,1,3,2,5,6,8], \"asc\"]\n       }\n   ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - code API - AlgorithmExecution",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fab05b2a-7c7f-4919-922e-7286d9fbe16b",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"code-API\",\n   \"nodes\": [\n   \t  {\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"flowInput\"]\n       },\n       {\n           \"nodeName\": \"B\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\"throw\", \"@A\", 1, 2, false, [1, 2, 3], { \"data\": \"bla\" }],\n           \"extraData\":{\n            \t\"code\": [\n            \t\"function run(input, self) {\",\n            \t\n            \t    \"const iterations = 2\",\n            \t    \n            \t   \t\"function execAlgorithm(algorithmName, input, self, iterations) {\",\n            \t   \t\n            \t   \t\t\"for (let i = 0; i < iterations; i++) {\",\n\t\t\t\t            \"const message = {\",\n\t\t\t\t                \"execId: algorithmName + '-' + i,\",\n\t\t\t\t                \"algorithmName: algorithmName + '-' + 'alg',\",\n\t\t\t\t                \"input: input,\",\n\t\t\t\t                \"resultAsRaw: false\",\n\t\t\t\t            \"};\",\n\t            \t\t\t\"self.startAlgorithmExecution(message)\",\n                    \t\"}\",\n            \t   \t\"}\",\n            \t   \t\n            \t   \t\"setTimeout(() => {\",\n      \t    \t\t   \"// self._sendDone('Iam done...')\",\n      \t\t\t\t\"}, 2000)\",\n            \t\n            \t   \t\"execAlgorithm('green', input, self, iterations)\",\n                    \"execAlgorithm('yellow', input, self, iterations)\",\n                    \"execAlgorithm('black', input, self, iterations)\",\n                    \"execAlgorithm('red', input, self, iterations)\",\n                    \n                    \n                    \"setTimeout(() => {\",\n      \t    \t\t   \"// Object.keys(self._execIds).forEach(e => self.stopAlgorithmExecution({ execId: e, reason: 'postman cancel' }));\",\n      \t\t\t\t\"}, 5000)\",\n      \t\t\t\t\n            \t\"}\"\n                 ]\n           }\n       },\n       {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@B\", 3]\n       }\n   ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - code API sub-pipeline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fab05b2a-7c7f-4919-922e-7286d9fbe16b",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"code-API\",\n   \"nodes\": [\n   \t  {\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"flowInput\"]\n       },\n       {\n           \"nodeName\": \"B\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\"throwx\", \"@A\", 1, 2, false, [1, 2, 3], { \"data\": \"bla\" }],\n           \"extraData\":{\n            \t\"code\": [\n            \t\"function run(input, self) {\",\n            \t    \"const iterations = 5\",\n            \t    \"const subPipelines = []\",\n            \t    \n            \t   \t\"async function startSubPipeline(name, input, self, iterations) {\",\n            \t   \t\n            \t   \t\t\"for (let i = 0; i < iterations; i++) {\",\n\t\t\t\t            \"const subPipeline = {\",\n\t\t\t\t                \"name: name\",\n\t\t\t\t            \"};\",\n\t            \t\t\t\"const sub = self.startSubPipeline({ subPipeline })\",\n\t            \t\t\t\"subPipelines.push(sub.id)\",\n\t            \t\t\t\"// await sub.done\",\n                    \t\"}\",\n            \t   \t\"}\",\n            \t\n            \t   \t\"startSubPipeline('simple', input, self, iterations)\",\n            \t   \t\n            \t   \t\"setTimeout(async () => {\",\n            \t   \t   \"const subPipelineId = subPipelines[2]\",\n      \t    \t\t   \"// await self.stopSubPipeline({ subPipelineId, reason: 'cancel...' })\",\n      \t\t\t\t\"}, 2000)\",\n      \t\t\t\t\n      \t\t\t\t\"return subPipelines\",\n      \t\t\t\t\n            \t\"}\"\n                 ]\n           }\n       },\n       {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@B\", 3]\n       }\n   ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - eval sort alg Copy",
 					"event": [
 						{
 							"listen": "test",
@@ -1550,7 +1653,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple-eval\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"split\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@flowInput.text\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                     \"return input[0].split(' ');\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"reduce\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"*@split\"\n            ],\n            \"extraData\":{\n               \"code\": [\n           \t    \"function reduce(input) {\",\n                   \"return input[0].reduce((all, word) => { \",\n                         \"if (word in all) {\",\n                      \t    \"all[word]++;\",\n                      \t\"}\",\n                      \t\"else {\",\n                      \t\t\"all[word] = 1;\",\n                      \t\"}\",\n                      \t\"return all;\",\n                      \"}, {});\",\n                   \"}\"\n            ]}\n        },\n        {\n            \"nodeName\": \"count\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@reduce\"\n            ],\n             \"extraData\":{\n                \"code\": [\n          \t    \"function count(input) {\",\n          \t        \"let dict = {}\",\n          \t        \"input[0].forEach(r => {\",\n          \t           \"Object.entries(r).forEach(([k, v]) => {\",\n                          \"if (!dict[k]) {\",\n                              \"dict[k] = 0;\",\n                           \"}\",\n                           \"dict[k] += v\",\n                           \"});\",\n                        \"});\",\n                       \"return dict\",\n          \t       \"}\"\n            ]}\n             \n        }\n    ],\n    \"flowInput\": {\n        \"text\": [\"In mathematics and computer science, a directed acyclic graph \",\n\t\t\t    \"(DAG (About this sound listen)), is a finite directed graph with\",\n\t\t\t    \" no directed cycles. That is, it consists of finitely many vertices and\",\n\t\t\t    \"such that every edge is directed from earlier to later in the sequence.\",\n\t\t\t    \"DAGs can model many different kinds of information. \",\n\t\t\t    \"A spreadsheet can be modeled as a DAG, with a vertex \",\n\t\t\t    \"for each cell and an edge whenever the formula in one\"]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n   \"name\": \"python-alg\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"one\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\"http://nibbler.silktide.com/\", \"blla\", 23]\n       }\n   ]\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1566,7 +1669,287 @@
 					"response": []
 				},
 				{
-					"_postman_id": "0365125d-6bb3-4e82-a0d4-4b303fd002aa",
+					"name": "/exec/raw - DAG A",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"DAG\",\n    \"nodes\": [{\n\t    \t\"nodeName\": \"A\",\n\t    \t\"algorithmName\": \"eval-alg\",\n\t    \t\"input\": [\"#[0...1]\"]\n        }\n       \n    ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw eval - props path Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"node1\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n           \t     10\n           ],\n           \"extraData\": {\n               \"code\": [\n                   \"(input) => {\",\n                   \"const array = Array.from(Array(input[0]).keys());\",\n                   \"return array }\"\n               ]}\n       },\n       {\n           \"nodeName\": \"node2\",\n           \"algorithmName\": \"green-alg\",\n           \"input\": [\n           \t   \"#@node1\",\n               \"@node1.array.0\",\n               \"@node1.array.50\",\n               \"@node1.array.99\",\n               \"@node1.number\",\n               \"@node1.string\",\n               \"@node1.object.prop\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input\",\n                   \"return result }\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"arraySize\": 20\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - skipped node",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"description\": \"description\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"one\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"@flowInput.size\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function array(input) {\",\n                     \"const array = Array.from(Array(input[0]).keys());\",\n                     \"return { array, data: {'foo': 'bar'}, 'number':80 }\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"two\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@one.array\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                    \"return input[0]\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"three\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n            \t \"@two\",\n            \t \"@one.data\",\n                 \"@one.no_data\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                    \"return input\",\n                \"}\"]}\n        }\n    ],\n    \"flowInput\": {\n        \"array\": [],\n        \"size\": 0\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - s3 tests",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"name\": \"s3-testing\",\n   \"nodes\": [\n          {\n           \"nodeName\": \"node1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@flowInput.arraySize\",\n               \"@flowInput.bufferSize\"\n           ],\n           \"extraData\": {\n               \"code\": [\n                   \"(input) => {\",\n                   \"return new Array(input[0]).fill(Buffer.alloc(input[1]));}\"\n               ]\n           }\n       },\n       {\n           \"nodeName\": \"node2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@node1\"\n           ],\n           \"extraData\": {\n               \"code\": [\n                   \"(input) => {\",\n                   \"return input;}\"\n               ]\n           }\n       },\n       {\n           \"nodeName\": \"node3\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@node2\"\n           ],\n           \"extraData\": {\n               \"code\": [\n                   \"(input) => {\",\n                   \"return input;}\"\n               ]\n           }\n       }\n   ],\n   \"options\": {\n       \"batchTolerance\": 60,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"priority\": 3,\n   \"flowInput\": {\n       \"arraySize\": 100,\n       \"bufferSize\": 150000\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - crazy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"crazy\",\n    \"nodes\": [\n    \t{\n            \"nodeName\": \"one\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#[1...5]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\t\"return new Promise((resolve,reject) => {\",\n\t\t          \t   \"setTimeout(() => \",\n\t\t          \t     \"resolve(input[0])\",\n\t\t          \t   \",input[0] * 1000)\",\n            \t\t  \"});\",\n              \"}\"]}\n        },\n        {\n            \"nodeName\": \"two\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#[6...10]\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\t\"setTimeout(() => \",\n\t\t          \t\t\t\"resolve(input[0])\",\n\t\t          \t\t\",input[0] * 1000)\",\n            \t\t \"});\",\n              \"}\"]}\n        },\n        {\n            \"nodeName\": \"three\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n            \t\"*@one\",\n                \"@one\",\n                \"*@two\",\n                \"@two\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t  \"return input\",\n                 \"}\"]}\n        },\n        {\n            \"nodeName\": \"four\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@three\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t  \"return input[0]\",\n                 \"}\"]}\n        },\n        {\n            \"nodeName\": \"five\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n            \t\"@three\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t  \"return input[0]\",\n                 \"}\"]}\n        },\n        {\n            \"nodeName\": \"six\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n            \t\"@four\", \"@five\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t  \"return input\",\n                 \"}\"]}\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - batch on batch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"one\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@flowInput.nums\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t     \"(input) => { return Array.from(Array(input[0]).keys()); }\"\n                ]}\n        },\n        {\n            \"nodeName\": \"two\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"#@one\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                    \"return input[0] + 1\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"three\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@two\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                    \"return input[0] + 1\",\n                \"}\"]}\n        }\n    ],\n    \"flowInput\": {\n        \"nums\": [10, 10, 10]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/exec/raw - process.exit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"test\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"one\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"bla\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function exit(input) {\",\n            \t\t\"return new Promise((resolve,reject) => {\",\n          \t    \t\t\"setTimeout(() => \",\n          \t    \t\t    \"process.exit(1)\",\n          \t\t\t\t\",1000)\",\n            \t\t\t\"});\",\n                \t\"}\"]}\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{url}}/exec/raw",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"exec",
+								"raw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "/exec/raw - countEven",
 					"event": [
 						{
@@ -1606,17 +1989,17 @@
 					"response": []
 				},
 				{
-					"_postman_id": "88d5c0cf-5e82-44f8-968c-33514644340d",
 					"name": "/exec/raw - throw",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "2bc8912c-2698-4306-8f7d-0c597b877857",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1630,7 +2013,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"countEven\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"even\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"#[1...2]\"],\n            \"extraData\": {\n                \"code\": [\n                    \"function throwErr(input) {\",\n                        \"return new Promise((resolve,reject) => {\",\n                          \"setTimeout(() => {\",\n                              \"reject(new Error('ooppps'))\",\n                             \"}\",\n                           \", input[0] * 1000)\",\n                       \"});\",\n                    \"}\"\n                ]\n            }\n        }\n        \n    ],\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    }\n}"
+							"raw": "{\n    \"name\": \"countEven\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"one\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"#[1,2,3,4,5,6,7,8,9,10]\"],\n            \"extraData\": {\n                \"code\": [\n                    \"function throwErr(input) {\",\n                          \"if(input[0] % 2 === 0) {\",\n                              \"throw new Error('ooppps with even input')\",\n                           \"}\",\n                           \"return input[0]\",\n                      \"}\"\n                ]\n            }\n        }\n    ],\n    \"options\": {\n        \"batchTolerance\": 10,\n        \"progressVerbosityLevel\": \"debug\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1646,7 +2029,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "bc96e001-0cea-4f5d-a9c2-f451ee746581",
 					"name": "/exec/raw - eval demo",
 					"event": [
 						{
@@ -1686,17 +2068,17 @@
 					"response": []
 				},
 				{
-					"_postman_id": "29d513f8-de28-43f8-9978-0b2136eb21c5",
 					"name": "/exec/raw - eval wait",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "5d07f8d0-c1ae-4cc1-a457-c983d0241d4f",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -1710,7 +2092,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"eval-wait\",\n  \"nodes\": [\n    {\n      \"nodeName\": \"evalsleep\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n      \t\"#[0...1000]\",\n        \"@flowInput.inputs\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input) => {\",\n          \"return new Promise((resolve,reject) => {\",\n          \t\"setTimeout(() => \",\n          \t   \"resolve(4)\",\n          \t\",input[1])\",\n             \"});\",\n           \"}\"\n        ]\n      }\n    }\n  ],\n  \"options\": {\n    \"batchTolerance\": 80,\n    \"progressVerbosityLevel\": \"info\"\n  },\n  \"priority\": 3,\n  \"flowInput\": {\n    \"inputs\": [\n      1000\n    ]\n  }\n}"
+							"raw": "{\n  \"name\": \"eval-wait\",\n  \"nodes\": [\n    {\n      \"nodeName\": \"evalsleep\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n        \"flowInput.inputs\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input) => {\",\n          \"return new Promise((resolve,reject) => {\",\n          \t\"setTimeout(() => \",\n          \t   \"resolve(4)\",\n          \t\",20000)\",\n             \"});\",\n           \"}\"\n        ]\n      }\n    }\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1726,7 +2108,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "bbfef71f-b52d-4684-badd-f4bef4465f4d",
 					"name": "/exec/raw - eval wait copy",
 					"event": [
 						{
@@ -1750,7 +2131,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\": \"batch\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"green\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@flowInput.files.links\"\n           ],\n           \"extraData\":{\n             \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0];\",\n                   \"return result }\"\n\n               ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"files\": {\n           \"links\": [\n               \"links-1\",\n               \"links-2\",\n               \"links-3\",\n               \"links-4\",\n               \"links-5\",\n               \"links-6\",\n               \"links-7\",\n               \"links-8\",\n               \"links-9\",\n               \"links-10\"\n           ]\n       }\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
+							"raw": "{\n   \"name\": \"batch\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"one\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#[1...50]\"\n           ],\n           \"extraData\":{\n             \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0];\",\n                   \"return { result } }\"\n\n               ]\n           }\n       },\n       {\n           \"nodeName\": \"two\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@one.result\"\n           ],\n           \"extraData\":{\n             \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0];\",\n                   \"return result }\"\n\n               ]\n           }\n       }\n   ],\n   \"flowInput\":{\n   \t    \"files\": []\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1766,8 +2147,7 @@
 					"response": []
 				},
 				{
-					"_postman_id": "e93ea194-8f2a-4bc9-b2cd-ccd2fb1285b9",
-					"name": "/exec/raw eval - batch on node",
+					"name": "/exec/raw eval - props path",
 					"event": [
 						{
 							"listen": "test",
@@ -1790,7 +2170,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"eval1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@flowInput.range\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const range = Array.from(Array(input[0]).keys());\",\n                   \"return range }\"\n                   ]\n           }\n       },\n       {\n           \"nodeName\": \"eval2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@eval1\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0] * 2;\",\n                   \"return result }\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"range\": 20\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
+							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"node1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@flowInput.arraySize\"\n           ],\n           \"extraData\": {\n               \"code\": [\n                   \"(input) => {\",\n                   \"const array = Array.from(Array(input[0]).keys());\",\n                   \"const number = 34\",\n                   \"const string = 'bla'\",\n                   \"const object = {prop: 100}\",\n                   \"return { array, number, string, object }}\"\n               ]}\n       },\n       {\n           \"nodeName\": \"node2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@node1.array\",\n               \"@node1.number\",\n               \"@node1.string\",\n               \"@node1.object.prop\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input\",\n                   \"return result }\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"arraySize\": 20\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1806,47 +2186,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "c5c67d7b-e2cd-4b23-8297-63f69011a47d",
-					"name": "/exec/raw eval - batch on node copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"eval1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@flowInput.range\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const range = Array.from(Array(input[0]).keys());\",\n                   \"return {range: range, foo: 123} }\"\n                   ]\n           }\n       },\n       {\n           \"nodeName\": \"eval2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@eval1.range\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0] * 2;\",\n                   \"return result }\"\n                   ]\n           }\n       },\n        {\n           \"nodeName\": \"eval3\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n              \"@eval2\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0];\",\n                   \"return result }\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"range\": 5\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "07188c71-4739-43f2-ad18-7b5ef390b32c",
 					"name": "/exec/raw eval - wait any batch",
 					"event": [
 						{
@@ -1870,7 +2209,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"eval1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@flowInput.ranges\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const range = Array.from(Array(input[0][0]).keys());\",\n                   \"return range }\"\n                   ]\n           }\n       },\n       {\n           \"nodeName\": \"eval2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@eval1\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n                   \"const result = input[0] * 2;\",\n                   \"return result }\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"ranges\": [100, 100, 100, 100, 100]\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
+							"raw": "{\n   \"name\": \"eval-demo\",\n   \"nodes\": [\n       {\n           \"nodeName\": \"eval1\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"#@flowInput.ranges\"\n           ]\n       },\n       {\n           \"nodeName\": \"eval2\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"*@eval1\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n\t                   \"if(input[0] === 100) {\",\n\t                \t\t\"throw new Error('oooops')}\",\n\t                \t\"return input[0]}\"\n                   ]\n           }\n       },\n       {\n           \"nodeName\": \"eval3\",\n           \"algorithmName\": \"eval-alg\",\n           \"input\": [\n               \"@eval2\"\n           ],\n           \"extraData\":{\n               \"code\":[\n                   \"(input) => {\",\n\t                \t\"return input}\"\n                   ]\n           }\n       }\n   ],\n   \"flowInput\": {\n       \"ranges\": [100, 200]\n   },\n   \"options\": {\n       \"batchTolerance\": 100,\n       \"progressVerbosityLevel\": \"debug\"\n   },\n   \"webhooks\": {\n       \"progress\": \"http://localhost:3003/webhook/progress\",\n       \"result\": \"http://localhost:3003/webhook/result\"\n   }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -1886,7 +2225,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "6b910cf8-4841-4c68-8d2a-b62161b85940",
 					"name": "/exec/raw eval - double wait any",
 					"event": [
 						{
@@ -1926,7 +2264,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "26654df5-f599-43e9-a083-4ec142ed3ac7",
 					"name": "/exec/raw eval - countEven",
 					"event": [
 						{
@@ -1966,7 +2303,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "7191fddd-e00a-4d27-9dc1-0b48291254d4",
 					"name": "/exec/raw - wc",
 					"event": [
 						{
@@ -1990,7 +2326,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple-eval\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"split\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@flowInput.text\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                     \"return input[0].split(' ');\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"reduce\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"*@split\"\n            ],\n            \"extraData\":{\n               \"code\": [\n           \t    \"function reduce(input) {\",\n                   \"return input[0].reduce((all, word) => { \",\n                         \"if (word in all) {\",\n                      \t    \"all[word]++;\",\n                      \t\"}\",\n                      \t\"else {\",\n                      \t\t\"all[word] = 1;\",\n                      \t\"}\",\n                      \t\"return all;\",\n                      \"}, {});\",\n                   \"}\"\n            ]}\n        },\n        {\n            \"nodeName\": \"count\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"@reduce\"\n            ],\n             \"extraData\":{\n                \"code\": [\n          \t    \"function count(input) {\",\n          \t        \"let dict = {}\",\n          \t        \"input[0].forEach(r => {\",\n          \t           \"Object.entries(r).forEach(([k, v]) => {\",\n                          \"if (!dict[k]) {\",\n                              \"dict[k] = 0;\",\n                           \"}\",\n                           \"dict[k] += v\",\n                           \"});\",\n                        \"});\",\n                       \"return dict\",\n          \t       \"}\"\n            ]}\n             \n        }\n    ],\n    \"flowInput\": {\n        \"text\": [\"In mathematics and computer science, a directed acyclic graph \",\n\t\t\t    \"(DAG (About this sound listen)), is a finite directed graph with\",\n\t\t\t    \" no directed cycles. That is, it consists of finitely many vertices and\",\n\t\t\t    \"edges, with each edge directed from one vertex to another, \",\n\t\t\t    \"such that there is no way to start at any vertex v and follow\",\n\t\t\t    \"a consistently-directed sequence of edges that eventually \",\n\t\t\t    \"loops back to v again. Equivalently, a DAG is a directed graph\",\n\t\t\t    \"that has a topological ordering, a sequence of the vertices \",\n\t\t\t    \"such that every edge is directed from earlier to later in the sequence.\",\n\t\t\t    \"DAGs can model many different kinds of information. \",\n\t\t\t    \"A spreadsheet can be modeled as a DAG, with a vertex \",\n\t\t\t    \"for each cell and an edge whenever the formula in one \",\n\t\t\t    \"cell uses the value from another; a topological ordering of this \",\n\t\t\t    \"DAG can be used to update all cell values when the spreadsheet is \",\n\t\t\t    \"changed. Similarly, topological orderings of DAGs can be used to order \",\n\t\t\t    \"the compilation operations in a makefile. The program evaluation and review \",\n\t\t\t    \"technique uses DAGs to model the milestones and activities of large human \",\n\t\t\t    \"projects, and schedule these projects to use as little total time as possible. \",\n\t\t\t    \"Combinational logic blocks in electronic circuit design, and the operations \",\n\t\t\t    \"in dataflow programming languages, involve acyclic networks of processing elements.\",\n\t\t\t    \"DAGs can also represent collections of events and their influence on each other, \",\n\t\t\t    \"either in a probabilistic structure such as a Bayesian network or as a record of\",\n\t\t\t    \"historical data such as family trees or the version histories of distributed \",\n\t\t\t    \"revision control systems. DAGs can also be used as a compact representation of \",\n\t\t\t    \"sequence data, such as the directed acyclic word graph representation of a \",\n\t\t\t    \"collection of strings, or the binary decision diagram representation of sequences \",\n\t\t\t    \"of binary choices. More abstractly, the reachability relation in a DAG forms a \",\n\t\t\t    \"partial order, and any finite partial order may be represented by a DAG using reachability.\",\n\t\t\t    \"Important polynomial time computational problems on DAGs include topological sorting \",\n\t\t\t    \"(finding a topological ordering), construction of the transitive closure and transitive\",\n\t\t\t    \"reduction (the largest and smallest DAGs with the same reachability relation, respectively), \",\n\t\t\t    \"and the closure problem, in which the goal is to find a minimum-weight subset of vertices with \",\n\t\t\t    \"no edges connecting them to the rest of the graph. Transforming a directed graph with cycles \",\n\t\t\t    \"into a DAG by deleting as few vertices or edges as possible (the feedback vertex set and \",\n\t\t\t    \"feedback edge set problem, respectively) is NP-hard, but any directed graph can be made \",\n\t\t\t    \"into a DAG (its condensation) by contracting each strongly connected component into a \",\n\t\t\t    \"single supervertex. The problems of finding shortest paths and longest paths can be \",\n\t\t\t    \"solved on DAGs in linear time, in contrast to arbitrary graphs for which shortest path \",\n\t\t\t    \"algorithms are slower and longest path problems are NP-hard.\",\n\t\t\t    \"The corresponding concept for undirected graphs is a forest, an undirected graph without \",\n\t\t\t    \"cycles. Choosing an orientation for a forest produces a special kind of directed acyclic graph\",\n\t\t\t    \"called a polytree. However there are many other kinds of directed acyclic graph that are not\"]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n    \"name\": \"simple-eval\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"split\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"#@flowInput.text\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n                     \"return input[0].split(' ');\",\n                \"}\"]}\n        },\n        {\n            \"nodeName\": \"reduce\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"*@split\"\n            ],\n            \"extraData\":{\n               \"code\": [\n           \t    \"function reduce(input) {\",\n                   \"return input[0].reduce((all, word) => { \",\n                         \"if (word in all) {\",\n                      \t    \"all[word]++;\",\n                      \t\"}\",\n                      \t\"else {\",\n                      \t\t\"all[word] = 1;\",\n                      \t\"}\",\n                      \t\"return all;\",\n                      \"}, {});\",\n                   \"}\"\n            ]}\n        },\n        {\n            \"nodeName\": \"count\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"@reduce\"\n            ],\n             \"extraData\":{\n                \"code\": [\n          \t    \"function count(input) {\",\n          \t        \"let dict = {}\",\n          \t        \"input[0].forEach(r => {\",\n          \t           \"Object.entries(r).forEach(([k, v]) => {\",\n                          \"if (!dict[k]) {\",\n                              \"dict[k] = 0;\",\n                           \"}\",\n                           \"dict[k] += v\",\n                           \"});\",\n                        \"});\",\n                       \"return dict\",\n          \t       \"}\"\n            ]}\n             \n        }\n    ],\n    \"flowInput\": {\n        \"text\": [\"In mathematics and computer science, a directed acyclic graph \",\n\t\t\t    \"(DAG (About this sound listen)), is a finite directed graph with\",\n\t\t\t    \" no directed cycles. That is, it consists of finitely many vertices and\",\n\t\t\t    \"edges, with each edge directed from one vertex to another, \",\n\t\t\t    \"such that there is no way to start at any vertex v and follow\",\n\t\t\t    \"a consistently-directed sequence of edges that eventually \",\n\t\t\t    \"loops back to v again. Equivalently, a DAG is a directed graph\",\n\t\t\t    \"that has a topological ordering, a sequence of the vertices \",\n\t\t\t    \"such that every edge is directed from earlier to later in the sequence.\",\n\t\t\t    \"DAGs can model many different kinds of information. \",\n\t\t\t    \"A spreadsheet can be modeled as a DAG, with a vertex \",\n\t\t\t    \"for each cell and an edge whenever the formula in one \",\n\t\t\t    \"cell uses the value from another; a topological ordering of this \",\n\t\t\t    \"DAG can be used to update all cell values when the spreadsheet is \",\n\t\t\t    \"changed. Similarly, topological orderings of DAGs can be used to order \",\n\t\t\t    \"the compilation operations in a makefile. The program evaluation and review \",\n\t\t\t    \"technique uses DAGs to model the milestones and activities of large human \",\n\t\t\t    \"projects, and schedule these projects to use as little total time as possible. \",\n\t\t\t    \"Combinational logic blocks in electronic circuit design, and the operations \",\n\t\t\t    \"in dataflow programming languages, involve acyclic networks of processing elements.\",\n\t\t\t    \"DAGs can also represent collections of events and their influence on each other, \",\n\t\t\t    \"either in a probabilistic structure such as a Bayesian network or as a record of\",\n\t\t\t    \"historical data such as family trees or the version histories of distributed \",\n\t\t\t    \"revision control systems. DAGs can also be used as a compact representation of \",\n\t\t\t    \"sequence data, such as the directed acyclic word graph representation of a \",\n\t\t\t    \"collection of strings, or the binary decision diagram representation of sequences \",\n\t\t\t    \"of binary choices. More abstractly, the reachability relation in a DAG forms a \",\n\t\t\t    \"partial order, and any finite partial order may be represented by a DAG using reachability.\",\n\t\t\t    \"Important polynomial time computational problems on DAGs include topological sorting \",\n\t\t\t    \"(finding a topological ordering), construction of the transitive closure and transitive\",\n\t\t\t    \"reduction (the largest and smallest DAGs with the same reachability relation, respectively), \",\n\t\t\t    \"and the closure problem, in which the goal is to find a minimum-weight subset of vertices with \",\n\t\t\t    \"no edges connecting them to the rest of the graph. Transforming a directed graph with cycles \",\n\t\t\t    \"into a DAG by deleting as few vertices or edges as possible (the feedback vertex set and \",\n\t\t\t    \"feedback edge set problem, respectively) is NP-hard, but any directed graph can be made \",\n\t\t\t    \"into a DAG (its condensation) by contracting each strongly connected component into a \",\n\t\t\t    \"single supervertex. The problems of finding shortest paths and longest paths can be \",\n\t\t\t    \"solved on DAGs in linear time, in contrast to arbitrary graphs for which shortest path \",\n\t\t\t    \"algorithms are slower and longest path problems are NP-hard.\",\n\t\t\t    \"The corresponding concept for undirected graphs is a forest, an undirected graph without \",\n\t\t\t    \"cycles. Choosing an orientation for a forest produces a special kind of directed acyclic graph\",\n\t\t\t    \"called a polytree. However there are many other kinds of directed acyclic graph that are not\"]\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -2006,7 +2342,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "ef9fd666-da17-42a1-9c55-68c0f0c4cb3b",
 					"name": "/exec/raw - small wc",
 					"event": [
 						{
@@ -2046,47 +2381,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "2daa5c29-a3f8-4cca-ade4-d491ddec088f",
-					"name": "/exec/raw - small wc copy",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"addmuldiv\",\n  \"nodes\": [\n    {\n      \"nodeName\": \"evaladd\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n        \"#@flowInput.addInput\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input,require)=> {\",\n          \"const result = input[0][0]+input[0][1]\",\n          \"return result;}\"\n        ]\n      }\n    },\n    {\n      \"nodeName\": \"evalmul\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n        \"#@flowInput.multInput\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input,require)=> {\",\n          \"const result = input[0][0] * input[0][1]\",\n          \"return result;}\"\n        ]\n      }\n    },\n    {\n      \"nodeName\": \"evalDiv\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\n        \"*@evaladd\",\n        \"*@evalmul\"\n      ],\n      \"extraData\": {\n        \"code\": [\n          \"(input,require)=> {\",\n          \"const result = input[0] / input[1]\",\n          \"return result;}\"\n        ]\n      }\n    }\n  ],\n  \"options\": {\n    \"batchTolerance\": 60,\n    \"progressVerbosityLevel\": \"debug\"\n  },\n  \"priority\": 3,\n  \"flowInput\": {\n    \"addInput\": [\n      [\n        5,\n        3\n      ],\n      [\n        1,\n        2\n      ],\n      [\n        4,\n        7\n      ],\n      [\n        6,\n        3\n      ],\n      [\n        10,\n        5\n      ]\n    ],\n    \"multInput\": [\n      [\n        3,\n        2\n      ],\n      [\n        5,\n        7\n      ],\n      [\n        2,\n        2\n      ],\n      [\n        4,\n        5\n      ],\n      [\n        1,\n        3\n      ]\n    ]\n  }\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/raw",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "76e9d559-db3e-4eeb-9dc5-efd936c76b0f",
 					"name": "/exec/raw - even odd",
 					"event": [
 						{
@@ -2126,7 +2420,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "edf0747a-bae4-4ff1-9489-60523ca12575",
 					"name": "/exec/raw - count letters",
 					"event": [
 						{
@@ -2150,7 +2443,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple-eval\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"text\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"@flowInput.text\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n            \t      \"return input[0].split(' ');\",\n            \"}\"]}\n        },\n        {\n            \"nodeName\": \"count\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#@text\"\n            ],\n            \"extraData\":{\n               \"code\": [\n           \t    \"function reduce(input) {\",\n                   \"return Array.from(input[0]).filter(r => r === 'a').length\",\n                 \"}\"\n            ]}\n        }\n    ],\n    \"flowInput\": {\n        \"text\": \"In aaaaaaa and computer science, a directed acyclic graph, In mathematics and computer science, a directed acyclic graph, In mathematics and computer science, a directed acyclic graph\"\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
+							"raw": "{\n    \"name\": \"simple-eval\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"text\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                 \"@flowInput.text\"\n            ],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function split(input) {\",\n            \t      \"return input[0].split(' ');\",\n            \"}\"]}\n        },\n        {\n            \"nodeName\": \"count\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\n                \"#@text\"\n            ],\n            \"extraData\":{\n               \"code\": [\n           \t    \"function reduce(input) {\",\n                   \"return Array.from(input[0]).filter(r => r === 'a').length\",\n                 \"}\"\n            ]}\n        }\n    ],\n    \"flowInput\": {\n        \"text\": \"In aaaaaaaa computer science, a directed acyclic graph, In mathematics and computer science, a directed acyclic graph, In mathematics and computer science, a directed acyclic graph\"\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://localhost:3003/webhook/progress\",\n        \"result\": \"http://localhost:3003/webhook/result\"\n    }\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -2166,7 +2459,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "8bf59065-c5bb-4dee-b7da-56c6030dedf1",
 					"name": "/exec/raw - eval calc",
 					"event": [
 						{
@@ -2208,21 +2500,20 @@
 			]
 		},
 		{
-			"_postman_id": "ac4714c8-895a-4f3c-a11b-919297dc7154",
 			"name": "stress",
 			"item": [
 				{
-					"_postman_id": "04e22440-3d75-4f10-b9ea-ebc09d9454f4",
 					"name": "/exec/stored - stress",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"type": "text/javascript",
+								"id": "a638dd49-6c44-451f-a9a8-b477faa3199a",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
 									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
-								]
+								],
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -2236,7 +2527,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"stress\",\n  \"nodes\": [\n  {\n      \"nodeName\": \"black\",\n      \"algorithmName\": \"black-alg\",\n      \"input\": [\"#[0...50]\"]\n  }],\n  \"webhooks\": {\n        \"progress\": \"http://monitor-server:30010/webhook/progress\",\n        \"result\": \"http://monitor-server:30010/webhook/result\"\n    },\n  \"options\": {\n     \"batchTolerance\": 100,\n     \"progressVerbosityLevel\": \"debug\"\n  }\n}\n"
+							"raw": "{\n  \"name\": \"stress\",\n  \"nodes\": [\n  {\n      \"nodeName\": \"eval\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [1, 3, false, \"#[0...3]\", true]\n  }],\n  \"webhooks\": {\n        \"progress\": \"http://monitor-server:30010/webhook/progress\",\n        \"result\": \"http://monitor-server:30010/webhook/result\"\n    },\n  \"options\": {\n     \"batchTolerance\": 100,\n     \"progressVerbosityLevel\": \"debug\"\n  }\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -2252,7 +2543,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "772d90ce-3a84-48c8-8f05-e4c8d7e909cf",
 					"name": "/exec/stored - stress (300)",
 					"event": [
 						{
@@ -2276,7 +2566,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"stress\",\n  \"nodes\": [\n  {\n      \"nodeName\": \"green\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\"#[0...10000\"]\n  }],\n  \"options\": {\n     \"batchTolerance\": 100,\n     \"progressVerbosityLevel\": \"debug\"\n  }\n}\n"
+							"raw": "{\n  \"name\": \"stress\",\n  \"nodes\": [\n  {\n      \"nodeName\": \"stress-node\",\n      \"algorithmName\": \"eval-alg\",\n      \"input\": [\"#[0...100]\"]\n  }],\n  \"options\": {\n     \"batchTolerance\": 100,\n     \"progressVerbosityLevel\": \"debug\"\n  }\n}\n"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -2292,7 +2582,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "1d3e1b52-cdbf-4711-82c5-4a1cb043257c",
 					"name": "/exec/stored - eval (1000)",
 					"event": [
 						{
@@ -2334,11 +2623,9 @@
 			]
 		},
 		{
-			"_postman_id": "75222383-9f14-43ca-9968-223d51ded4f6",
 			"name": "stop",
 			"item": [
 				{
-					"_postman_id": "e5b16a0e-b077-4e94-bcaf-759698599cbf",
 					"name": "/exec/stop - latest",
 					"request": {
 						"method": "POST",
@@ -2368,11 +2655,9 @@
 			]
 		},
 		{
-			"_postman_id": "3a967432-2d56-4e2e-b746-3bbe10ebb181",
 			"name": "status",
 			"item": [
 				{
-					"_postman_id": "8e1c3518-64e4-4e0d-a3e4-ad9281e24180",
 					"name": "/exec/status",
 					"request": {
 						"method": "GET",
@@ -2382,10 +2667,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/status/{{jobId}}?",
 							"host": [
@@ -2408,7 +2689,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "6848ce6b-f96a-4eb4-9dfc-d9bab05ed189",
 					"name": "/exec/pipelines/status/raw",
 					"request": {
 						"method": "GET",
@@ -2418,10 +2698,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/pipelines/status/raw/raw-simple?sort=desc&order=mod&limit=50",
 							"host": [
@@ -2453,7 +2729,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "45dfd9fe-900e-42a2-9ef2-34e7d8740e60",
 					"name": "/exec/pipelines/status/stored",
 					"request": {
 						"method": "GET",
@@ -2463,10 +2738,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/pipelines/status/stored/evalwait?sort=asc&order=mod&limit=1000",
 							"host": [
@@ -2498,7 +2769,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "7611f6ea-1755-4f73-bf92-442cfb792aae",
 					"name": "/exec/cron/status",
 					"request": {
 						"method": "GET",
@@ -2508,10 +2778,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/cron/status/simple_trigger?sort=desc&order=mod&limit=5",
 							"host": [
@@ -2544,11 +2810,9 @@
 			]
 		},
 		{
-			"_postman_id": "610ece03-aa72-4cb2-a5b7-6473a81dc7d1",
 			"name": "result",
 			"item": [
 				{
-					"_postman_id": "557ab86f-6083-45e8-b228-110f8c949f2a",
 					"name": "/exec/results",
 					"request": {
 						"method": "GET",
@@ -2558,10 +2822,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/results/{{jobId}}",
 							"host": [
@@ -2577,7 +2837,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "9b6231eb-3536-4819-a41b-2ead39570aa2",
 					"name": "/exec/cron/results",
 					"request": {
 						"method": "GET",
@@ -2587,10 +2846,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/cron/results/simple_trigger?sort=desc&order=mod&limit=5",
 							"host": [
@@ -2621,7 +2876,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "b435c735-9bfd-4556-bb65-9d8613a166e1",
 					"name": "/exec/pipelines/results/raw",
 					"request": {
 						"method": "GET",
@@ -2631,10 +2885,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/pipelines/results/raw/simple?sort=desc&order=mod&limit=50",
 							"host": [
@@ -2666,7 +2916,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "deff35f5-2bb2-41a8-896a-d8753a0e82cc",
 					"name": "/exec/pipelines/results/stored",
 					"request": {
 						"method": "GET",
@@ -2676,10 +2925,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/exec/pipelines/results/stored/trigger?sort=desc&order=mod&limit=5",
 							"host": [
@@ -2713,11 +2958,9 @@
 			]
 		},
 		{
-			"_postman_id": "7adce364-dc84-4c68-a369-67c513d8263b",
 			"name": "store",
 			"item": [
 				{
-					"_postman_id": "607b64ca-8fb4-4c87-a770-f696630e9fde",
 					"name": "/store/pipelines",
 					"request": {
 						"method": "GET",
@@ -2727,10 +2970,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"simple-wait-batch\",\n  \"options\": {\n    \"batchTolerance\": 100,\n    \"progressVerbosityLevel\": \"debug\"\n  }\n}"
-						},
 						"url": {
 							"raw": "{{url}}/store/pipelines",
 							"host": [
@@ -2745,7 +2984,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "28de306c-ba37-44c2-8384-cbbb9ddd408b",
 					"name": "/store/pipelines/<name>",
 					"request": {
 						"method": "GET",
@@ -2755,10 +2993,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"simple-wait-batch\",\n  \"options\": {\n    \"batchTolerance\": 100,\n    \"progressVerbosityLevel\": \"debug\"\n  }\n}"
-						},
 						"url": {
 							"raw": "{{url}}/store/pipelines/simple trigger",
 							"host": [
@@ -2774,7 +3008,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "4b21e8a8-4681-41bc-a44d-cda5c7955496",
 					"name": "/store/pipelines",
 					"request": {
 						"method": "PUT",
@@ -2786,7 +3019,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n        \"name\": \"simple\",\n        \"nodes\": [\n            {\n                \"nodeName\": \"green\",\n                \"algorithmName\": \"green-alg\",\n                \"input\": [\n                    \"@flowInput.files.link\"\n                ]\n            },\n            {\n                \"nodeName\": \"yellow\",\n                \"algorithmName\": \"yellow-alg\",\n                \"input\": [\n                    \"@green\"\n                ]\n            },\n            {\n                \"nodeName\": \"black\",\n                \"algorithmName\": \"black-alg\",\n                \"input\": [\n                    \"@yellow\"\n                ]\n            }\n        ],\n        \"flowInput\": {\n            \"files\": {\n                \"link\": \"links-1\"\n            }\n        },\n        \"webhooks\": {\n            \"progress\": \"http://localhost:3003/webhook/progress\",\n            \"result\": \"http://localhost:3003/webhook/result\"\n        },\n        \"priority\": 3\n    }"
+							"raw": " {\n        \"name\": \"trigger-3\",\n        \"nodes\": [\n            {\n                \"nodeName\": \"green\",\n                \"algorithmName\": \"green-alg\",\n                \"input\": [\n                    \"@flowInput\"\n                ]\n            },\n            {\n                \"nodeName\": \"yellow\",\n                \"algorithmName\": \"yellow-alg\",\n                \"input\": [\n                    \"@green\"\n                ]\n            },\n            {\n                \"nodeName\": \"black\",\n                \"algorithmName\": \"black-alg\",\n                \"input\": [\n                    \"@yellow\"\n                ]\n            }\n        ],\n        \"flowInput\": {\n            \"files\": {\n                \"link\": \"links-1\"\n            }\n        },\n        \"triggers\": {\n            \"pipelines\": [\n                \"trigger-2\"\n            ],\n            \"cron\": {\n                \"enabled\": true,\n                \"pattern\": \"0 * * * *\"\n            }\n        },\n        \"options\": {\n            \"batchTolerance\": 100,\n            \"progressVerbosityLevel\": \"debug\",\n            \"ttl\": 3600\n        },\n        \"webhooks\": {\n            \"progress\": \"http://localhost:3003/webhook/progress\",\n            \"result\": \"http://localhost:3003/webhook/result\"\n        },\n        \"priority\": 3\n    }"
 						},
 						"url": {
 							"raw": "{{url}}/store/pipelines",
@@ -2802,7 +3035,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "22d41a35-b1a8-44ec-9ffe-bef687cd7be5",
 					"name": "/store/pipelines/<name>",
 					"request": {
 						"method": "DELETE",
@@ -2817,21 +3049,20 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/store/pipelines/simple_trigger",
+							"raw": "{{url}}/store/pipelines/trigger1",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"store",
 								"pipelines",
-								"simple_trigger"
+								"trigger1"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"_postman_id": "7cd008b4-3c74-49fb-83f5-16ea7834087d",
 					"name": "/store/pipelines",
 					"request": {
 						"method": "POST",
@@ -2843,7 +3074,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"evalWaitAny\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"evalsleep\",\n            \"algorithmName\": \"new_alg\",\n            \"input\": [\n                \"#@flowInput.inputs\"\n            ]\n        }\n    ]\n}"
+							"raw": "    {\n        \"name\": \"trigger-cron2\",\n        \"nodes\": [\n            {\n                \"nodeName\": \"green\",\n                \"algorithmName\": \"green-alg\",\n                \"input\": [\n                    \"@flowInput\"\n                ]\n            },\n            {\n                \"nodeName\": \"yellow\",\n                \"algorithmName\": \"yellow-alg\",\n                \"input\": [\n                    \"@green\"\n                ]\n            },\n            {\n                \"nodeName\": \"black\",\n                \"algorithmName\": \"black-alg\",\n                \"input\": [\n                    \"@yellow\"\n                ]\n            }\n        ],\n        \"flowInput\": {\n            \"files\": {\n                \"link\": \"links-1\"\n            }\n        },\n        \"triggers\": {\n             \"cron\": {\n                 \"pattern\": \"20,40 * * * * 0,1,2\"\n             }\n        },\n        \"options\": {\n            \"batchTolerance\": 100,\n            \"progressVerbosityLevel\": \"debug\",\n            \"ttl\": 3600\n        },\n        \"webhooks\": {\n            \"progress\": \"http://localhost:3003/webhook/progress\",\n            \"result\": \"http://localhost:3003/webhook/result\"\n        },\n        \"priority\": 3\n    }"
 						},
 						"url": {
 							"raw": "{{url}}/store/pipelines",
@@ -2861,11 +3092,9 @@
 			]
 		},
 		{
-			"_postman_id": "658dbd76-59da-4401-b87c-dc970bdfee87",
 			"name": "algorithms",
 			"item": [
 				{
-					"_postman_id": "7137e429-0b60-4a45-8e97-a5b3f50d5e02",
 					"name": "/store/algorithms",
 					"request": {
 						"method": "GET",
@@ -2875,10 +3104,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"simple-wait-batch\",\n  \"options\": {\n    \"batchTolerance\": 100,\n    \"progressVerbosityLevel\": \"debug\"\n  }\n}"
-						},
 						"url": {
 							"raw": "{{url}}/store/algorithms",
 							"host": [
@@ -2893,7 +3118,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "385ed0fb-da98-41db-99b4-c5dc06c14b27",
 					"name": "/store/algorithms/<name>",
 					"request": {
 						"method": "GET",
@@ -2903,26 +3127,21 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"name\": \"simple-wait-batch\",\n  \"options\": {\n    \"batchTolerance\": 100,\n    \"progressVerbosityLevel\": \"debug\"\n  }\n}"
-						},
 						"url": {
-							"raw": "{{url}}/store/algorithms/green-alg",
+							"raw": "{{url}}/store/algorithms/sort-alg",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"store",
 								"algorithms",
-								"green-alg"
+								"sort-alg"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"_postman_id": "eaf8ef08-9631-40cf-bd40-8955a39ed396",
 					"name": "/store/algorithms",
 					"request": {
 						"method": "PUT",
@@ -2934,7 +3153,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"cpu-load\",\n    \"algorithmImage\": \"hkube/algorunner\",\n    \"cpu\": 12,\n    \"mem\": \"40Mi\"\n}"
+							"raw": "{\n        \"name\": \"python-alg\",\n        \"env\": \"python\",\n        \"code\": {\n            \"checksum\": \"455b289e1ede02c0b5dfc26ae60d0ada\",\n            \"fileSize\": 456,\n            \"entryPoint\": \"main.py\"\n        },\n        \"algorithmImage\": \"hkube/python-alg:v1.0.0\",\n        \"cpu\": 0.1,\n        \"mem\": \"512Mi\",\n        \"algorithmEnv\": {\n            \"ALGORITHM_ENTRY_POINT\": \"main.py\"\n        },\n        \"workerEnv\": {\n            \"WORKER_ALGORITHM_PROTOCOL\": \"ws\"\n        },\n        \"minHotWorkers\": 0,\n        \"userInfo\": {\n            \"platform\": \"linux\",\n            \"hostname\": \"ubuntu-hareln-ww\",\n            \"username\": \"harelh\"\n        },\n        \"options\": {\n            \"debug\": false\n        },\n        \"nodeSelector\": {\n            \"kubernetes.io/hostname\": \"node1\"\n        }\n    }"
 						},
 						"url": {
 							"raw": "{{url}}/store/algorithms",
@@ -2950,7 +3169,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "6b731503-8634-445f-be84-706b1d6562af",
 					"name": "/store/algorithms/<name>",
 					"request": {
 						"method": "DELETE",
@@ -2965,22 +3183,20 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "{{url}}/store/algorithms/debug/debug",
+							"raw": "{{url}}/store/algorithms/eval-hot",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"store",
 								"algorithms",
-								"debug",
-								"debug"
+								"eval-hot"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"_postman_id": "bc85fd03-ed2d-4a1f-a996-140e67341565",
 					"name": "/store/algorithms",
 					"request": {
 						"method": "POST",
@@ -2992,17 +3208,55 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"debug\",\n    \"algorithmImage\": \"hkube/algorithm-example\",\n    \"cpu\": 0.1,\n    \"mem\": \"4Mi\"\n}"
+							"raw": "{\n        \"name\": \"0\",\n        \"algorithmImage\": \"hkube/algorunner\",\n        \"cpu\": 1,\n        \"mem\": \"512Mi\",\n        \"minHotWorkers\": 0,\n        \"options\": {\n            \"debug\": false\n        }\n  }"
 						},
 						"url": {
-							"raw": "{{url}}/store/algorithms/debug",
+							"raw": "{{url}}/store/algorithms",
 							"host": [
 								"{{url}}"
 							],
 							"path": [
 								"store",
-								"algorithms",
-								"debug"
+								"algorithms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/store/algorithms/apply",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "payload",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/store/algorithms",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"store",
+								"algorithms"
 							]
 						}
 					},
@@ -3011,11 +3265,9 @@
 			]
 		},
 		{
-			"_postman_id": "57fa0dc1-7e8a-4c3c-b64c-74e3adcea47a",
 			"name": "webhooks",
 			"item": [
 				{
-					"_postman_id": "617f6875-9f8a-43be-bb27-3376414bee88",
 					"name": "/webhooks/results",
 					"request": {
 						"method": "GET",
@@ -3025,10 +3277,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/webhooks/results/{{jobId}}",
 							"host": [
@@ -3044,7 +3292,6 @@
 					"response": []
 				},
 				{
-					"_postman_id": "a3104b6b-03d2-4d7d-a7b7-983bab50e431",
 					"name": "/webhooks/status",
 					"request": {
 						"method": "GET",
@@ -3054,10 +3301,6 @@
 								"value": "application/json"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"execution_id\": \"{{execution_id}}\"\n}"
-						},
 						"url": {
 							"raw": "{{url}}/webhooks/status/{{jobId}}",
 							"host": [
@@ -3071,24 +3314,49 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/webhooks/",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/webhooks/{{jobId}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"webhooks",
+								"{{jobId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"_postman_id": "a068d12d-ada4-4009-99ab-b48a1e541790",
 			"name": "test",
 			"item": [
 				{
-					"_postman_id": "546cbf40-9782-444a-9d46-923e6ce15595",
-					"name": "/exec/raw - simple Copy",
+					"name": "/exec/raw - DAG",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
+								"id": "fa6cae4e-de57-4b16-8e63-5a4fa403ea50",
 								"type": "text/javascript",
 								"exec": [
 									"var jsonData = JSON.parse(responseBody);",
-									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);"
+									"postman.setEnvironmentVariable(\"jobId\", jsonData.jobId);",
+									"",
+									"",
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
 								]
 							}
 						}
@@ -3103,7 +3371,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"simple\",\n    \"nodes\": [\n        {\n            \"nodeName\": \"green\",\n            \"algorithmName\": \"green-alg\",\n            \"input\": [\n                \"@flowInput.files.link\"\n            ]\n        },\n        {\n            \"nodeName\": \"yellow\",\n            \"algorithmName\": \"yellow-alg\",\n            \"input\": [\n                \"@green\"\n            ]\n        },\n        {\n            \"nodeName\": \"black\",\n            \"algorithmName\": \"black-alg\",\n            \"input\": [\n                \"@yellow\"\n            ]\n        }\n    ],\n    \"flowInput\": {\n        \"files\": {\n            \"link\": \"links-1\"\n        }\n    },\n    \"options\": {\n        \"batchTolerance\": 100,\n        \"progressVerbosityLevel\": \"debug\"\n    },\n    \"webhooks\": {\n        \"progress\": \"http://monitor-server:30010/webhook/progress\",\n        \"result\": \"http://monitor-server:30010/webhook/result\"\n    },\n    \"priority\": 1\n}"
+							"raw": "{\n    \"name\": \"DAG\",\n    \"nodes\": [{\n            \"nodeName\": \"A\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"B\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@A\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"C\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"D\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@G\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[2])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"E\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@B\", \"@C\", \"@D\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[3])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"F\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [\"@E\", \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        },\n        {\n            \"nodeName\": \"G\",\n            \"algorithmName\": \"eval-alg\",\n            \"input\": [1, \"@flowInput.timeout\"],\n            \"extraData\":{\n            \t\"code\": [\n            \t\"function sum(input) {\",\n            \t\"return new Promise((resolve,reject) => {\",\n\t\t          \t\"setTimeout(() => \",\n\t\t          \t   \"resolve(input[0] * 2)\",\n\t\t          \t\",input[1])\",\n            \t\t\t\"});\",\n                   \"}\"]}\n        }],\n    \"flowInput\": {\n        \"timeout\": 5000\n    }\n\n}"
 						},
 						"url": {
 							"raw": "{{url}}/exec/raw",
@@ -3113,34 +3381,6 @@
 							"path": [
 								"exec",
 								"raw"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"_postman_id": "9b54b860-abd7-4a10-8594-90b20a50429b",
-					"name": "/exec/stop - latest Copy",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"jobId\": \"{{jobId}}\",\n  \"reason\": \"cancel from postman\"\n}"
-						},
-						"url": {
-							"raw": "{{url}}/exec/stop",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"exec",
-								"stop"
 							]
 						}
 					},
