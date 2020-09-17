@@ -6,7 +6,9 @@ if [ -z $DEV_VERSION ]; then
 else
   HKUBE_CHART_REPO="hkube-dev/hkube"
 fi
-LATEST_VERSION=$(helm search repo hkube|grep "${HKUBE_CHART_REPO}" | awk '{print $2}')
+CHART_INFO=$(helm search repo hkube|grep "${HKUBE_CHART_REPO}")
+LATEST_VERSION=$( echo $CHART_INFO | awk '{print $2}')
+APP_VERSION=$( echo $CHART_INFO | awk '{print $3}')
 VERSION=${VERSION:-$LATEST_VERSION}
 echo downloading version $VERSION
 
@@ -21,6 +23,8 @@ curl -Lo image-export-import https://github.com/kube-HPC/image-exprort-import/re
 
 curl -Lo hkubectl https://github.com/kube-HPC/hkubectl/releases/download/$(curl -s https://api.github.com/repos/kube-HPC/hkubectl/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')/hkubectl-linux \
 && chmod +x hkubectl
+curl -Lo hkubectl.exe https://github.com/kube-HPC/hkubectl/releases/download/$(curl -s https://api.github.com/repos/kube-HPC/hkubectl/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')/hkubectl-win.exe
+curl -Lo hkubectl-macos https://github.com/kube-HPC/hkubectl/releases/download/$(curl -s https://api.github.com/repos/kube-HPC/hkubectl/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')/hkubectl-macos
 if [ ! -z $PREV_VERSION ]
 then
   helm pull --untar ${HKUBE_CHART_REPO} --untardir hkube-${PREV_VERSION} --version ${PREV_VERSION}
@@ -29,11 +33,11 @@ then
   rm -rf hkube-${PREV_VERSION}
 else
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "etcd-operator.enable=true,jaeger.enable=true,nginx-ingress.enable=true"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "etcd-operator.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true"
 fi
 
 sleep 5
-mv ${VERSION} dockers/hkube
+mv ${APP_VERSION} dockers/hkube
 mv thirdparty dockers/
 echo compressing 
 tar cfz hkube-${VERSION}.tgz hkube dockers image-export-import hkubectl
