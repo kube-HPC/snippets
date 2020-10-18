@@ -1,11 +1,28 @@
 #!/bin/bash
+hash helm &> /dev/null
+if [ $? -ne 0 ]
+then
+  echo "helm v3 is required and could not be found"
+  exit
+fi
+helm_version=$(helm version)
+echo $helm_version | grep -q 'Version:"v3'
+has_helm3=$?
+if [ $has_helm3 -ne 0 ]
+then
+  echo "helm v3 is required and could not be found"
+  echo "found helm version: ${helm_version} "
+  exit
+fi
 BASE_DIR=${BASE_DIR:-$HOME/install/dockers}
-helm repo update
 if [ -z $DEV_VERSION ]; then
   HKUBE_CHART_REPO="hkube/hkube"
+  helm repo add hkube https://hkube.io/helm
 else
   HKUBE_CHART_REPO="hkube-dev/hkube"
+  helm repo add hkube-dev https://hkube.io/helm/dev
 fi
+helm repo update
 CHART_INFO=$(helm search repo hkube|grep "${HKUBE_CHART_REPO}")
 LATEST_VERSION=$( echo $CHART_INFO | awk '{print $2}')
 APP_VERSION=$( echo $CHART_INFO | awk '{print $3}')
