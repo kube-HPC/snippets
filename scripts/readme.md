@@ -7,7 +7,7 @@ options (set as env variables)
 |-------|-----------|-------|
 |DEV_VERSION|download dev version from hkube-dev or stable from hkube|false|
 |PREV_VERSION|last version to compare to. if set will only download diffs|empty|
-|OBFUSCATE|base64|false|
+|SPLIT|splits the final tgz into 100MB chunks |false|
 |BASE_DIR|download folder|$HOME/install/dockers/|
 |VERSION|the version to download|latest from the chosen helm repository|
 
