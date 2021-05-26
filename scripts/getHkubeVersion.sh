@@ -34,7 +34,6 @@ mkdir -p ${DIR}
 cd ${DIR}
 helm pull --untar ${HKUBE_CHART_REPO} --version ${VERSION}
 mkdir -p dockers
-# cp $HOME/dev/hkube/image-exprort-import/image-export-import .
 curl -Lo image-export-import https://github.com/kube-HPC/image-exprort-import/releases/download/$(curl -s https://api.github.com/repos/kube-HPC/image-exprort-import/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')/image-export-import \
 && chmod +x image-export-import
 
@@ -46,11 +45,11 @@ if [ ! -z $PREV_VERSION ]
 then
   helm pull --untar ${HKUBE_CHART_REPO} --untardir hkube-${PREV_VERSION} --version ${PREV_VERSION}
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml --prevVersion  ./hkube-${PREV_VERSION}/hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --prevChartPath ./hkube-${PREV_VERSION}/hkube/ --options "etcd-operator.enable=true,jaeger.enable=true,nginx-ingress.enable=true"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --prevChartPath ./hkube-${PREV_VERSION}/hkube/ --options "jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
   rm -rf hkube-${PREV_VERSION}
 else
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "etcd-operator.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
 fi
 
 sleep 5
