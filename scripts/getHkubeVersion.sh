@@ -26,8 +26,12 @@ helm repo update
 CHART_INFO=$(helm search repo hkube|grep "${HKUBE_CHART_REPO}")
 LATEST_VERSION=$( echo $CHART_INFO | awk '{print $2}')
 APP_VERSION=$( echo $CHART_INFO | awk '{print $3}')
+if [ ! -z $VERSION ]; then
+  CHART_INFO=$(helm search repo ${HKUBE_CHART_REPO} --version $VERSION | grep $VERSION)
+  APP_VERSION=$( echo $CHART_INFO | awk '{print $3}')
+fi
 VERSION=${VERSION:-$LATEST_VERSION}
-echo downloading version $VERSION
+echo downloading version $VERSION, app_version: $APP_VERSION
 
 DIR=${BASE_DIR}/hkube-${VERSION}
 mkdir -p ${DIR}
@@ -45,11 +49,11 @@ if [ ! -z $PREV_VERSION ]
 then
   helm pull --untar ${HKUBE_CHART_REPO} --untardir hkube-${PREV_VERSION} --version ${PREV_VERSION}
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml --prevVersion  ./hkube-${PREV_VERSION}/hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --prevChartPath ./hkube-${PREV_VERSION}/hkube/ --options "jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --prevChartPath ./hkube-${PREV_VERSION}/hkube/ --options "global.sidecars.fluent_bit.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
   rm -rf hkube-${PREV_VERSION}
 else
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "global.sidecars.fluent_bit.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
 fi
 
 sleep 5
