@@ -1,0 +1,1 @@
+kubectl logs $@ | jq -R 'fromjson? | "\(.meta.timestamp ), \(.meta.timestamp / 1000 | todate ), \(.level), \(.meta.internal.jobId), \(.meta.internal.taskId), \(.meta.internal.component), \(.message)"'
