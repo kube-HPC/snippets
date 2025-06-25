@@ -53,7 +53,7 @@ then
   rm -rf hkube-${PREV_VERSION}
 else
   ./image-export-import export --path $PWD --semver ./hkube/values.yaml
-  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "global.sidecars.fluent_bit.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
+  ./image-export-import exportThirdparty --path $PWD --chartPath ./hkube/ --options "global.sidecars.fluent_bit.enable=true,jaeger.enable=true,nginx-ingress.enable=true,minio.enable=true,secContext.overrideMinio=false,env.hostname_strict="placehholder",api_server.client_secretKey="placehholder",global.image_pull_secret.use_existing=false,global.clusterName=download,global.k8senv=kubernetes"
 fi
 
 sleep 5
